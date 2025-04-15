@@ -189,6 +189,98 @@ resetWorkspaceEnvironment
 killxcodes
 ```
 
+## Vim Configuration
+
+This repository includes a standalone, dependency-free Vim configuration designed to provide a productive development environment while maintaining Vim's native speed and efficiency.
+
+### Philosophy
+
+The `.vimrc` configuration follows these principles:
+- **No external dependencies** - Uses only built-in Vim features
+- **Sensible defaults** - Provides a clean, intuitive editing experience
+- **Language-aware settings** - Automatically adjusts to different file types
+- **Productive keybindings** - Enhances workflow without overwhelming complexity
+
+### Features
+
+#### Core Functionality
+- Syntax highlighting and smart indentation
+- Line numbering (relative + absolute)
+- Enhanced status line with useful information
+- Persistent undo history
+- Automatic file type detection
+
+#### Navigation and Productivity
+- Built-in file explorer (netrw) with tree view
+- Intuitive split navigation with Ctrl+h/j/k/l
+- Buffer and tab management shortcuts
+- Space key to clear search highlighting
+- Efficient window and buffer navigation
+
+#### File Type Intelligence
+- Language-specific indentation and settings
+- Specialized configurations for:
+  - Python, JavaScript, HTML/CSS
+  - Go, Rust, YAML, Markdown
+  - Shell scripts and Git commit messages
+
+#### Advanced Features
+- Trailing whitespace highlighting and removal
+- Enhanced completion menu
+- Sensible cursor behavior
+- System clipboard integration
+- Intelligent search with ripgrep/ag when available
+
+### Installation
+
+The `.vimrc` configuration is automatically installed as part of the standard installation process described above. If you want to install it manually:
+
+```bash
+# Back up your existing configuration if needed
+mv ~/.vimrc ~/.vimrc.backup
+
+# Copy the new configuration
+cp ~/.dot-files/.vimrc ~/.vimrc
+```
+
+### Customization
+
+To customize the Vim configuration:
+
+1. Edit the Vim configuration:
+   ```bash
+   vim ~/.vimrc
+   ```
+
+2. Create a local customization file that won't be overwritten:
+   ```bash
+   vim ~/.vimrc.local
+   ```
+   The main `.vimrc` automatically loads this file if it exists.
+
+### Usage Examples
+
+#### Editing with file explorer
+```bash
+vim .
+# Then press ',e' to toggle the file explorer
+```
+
+#### Quick saving and navigation
+```bash
+# Inside Vim, use these shortcuts:
+# ',w' to quickly save
+# ',bn' and ',bp' to move between buffers
+# Ctrl+h/j/k/l to navigate between splits
+```
+
+#### Editing your Vim configuration
+```bash
+# Inside Vim:
+# ',ev' to edit .vimrc
+# ',sv' to source (reload) .vimrc
+```
+
 ## Customization
 To customize this configuration:
 
