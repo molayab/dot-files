@@ -1,35 +1,35 @@
 [alias]
-	co = checkout
+    co = checkout
     br = branch
-	ci = commit
-	st = status
-	ls = log --oneline
-	ll = log --graph
-	l = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+    ci = commit
+    st = status
+    ls = log --oneline
+    ll = log --graph
+    l = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
 
 [pull]
-	ff = only
-	rebase = true
+    ff = only
+    rebase = true
 
 [merge]
-	tool = vscode
+    tool = vscode
 
 [mergetool "vscode"]
-	cmd = code --wait $MERGED
+    cmd = code --wait $MERGED
 
 [diff]
-	tool = vscode
+    tool = vscode
 
 [difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+    cmd = code --wait --diff $LOCAL $REMOTE
 
 [core]
-	editor = code --wait
-	compression = 0
+    editor = code --wait
+    compression = 0
 
 [push]
-	default = current
+    default = current
 
 [init]
-	defaultBranch = develop
+    defaultBranch = develop
 

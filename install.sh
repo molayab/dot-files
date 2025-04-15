@@ -172,54 +172,18 @@ configure_git() {
     
     local defaults_file="$SCRIPT_DIR/.gitconfig.defaults"
     if [ -f "$defaults_file" ]; then
-        # Read and apply each section from .gitconfig.defaults
-        local sections=$(grep -E '^\[.*\]' "$defaults_file" | sed -e 's/\[//' -e 's/\]//')
-        
-        for section in $sections; do
-            # For sections that might have subsections (like mergetool.vscode)
-            if [[ "$section" == *"."* ]]; then
-                main_section=$(echo "$section" | cut -d. -f1)
-                sub_section=$(echo "$section" | cut -d. -f2)
-                
-                # Get keys and values for this section
-                local config_lines=$(sed -n "/^\[$section\]/,/^\[/p" "$defaults_file" | grep -v "^\[" | grep -v "^$")
-                
-                while IFS= read -r line; do
-                    [ -z "$line" ] && continue
-                    key=$(echo "$line" | cut -d= -f1 | sed 's/^[ \t]*//')
-                    value=$(echo "$line" | cut -d= -f2- | sed 's/^[ \t]*//')
-                    
-                    # Only set if not already configured
-                    if [[ -z "$(git config --global --get "$main_section.$sub_section.$key")" ]]; then
-                        git config --global "$main_section.$sub_section.$key" "$value" || {
-                            print_message "warn" "Failed to set Git config $main_section.$sub_section.$key"
-                        }
-                    fi
-                done <<< "$config_lines"
-            else
-                # Get keys and values for this section
-                local config_lines=$(sed -n "/^\[$section\]/,/^\[/p" "$defaults_file" | grep -v "^\[" | grep -v "^$")
-                
-                while IFS= read -r line; do
-                    [ -z "$line" ] && continue
-                    key=$(echo "$line" | cut -d= -f1 | sed 's/^[ \t]*//')
-                    value=$(echo "$line" | cut -d= -f2- | sed 's/^[ \t]*//')
-                    
-                    # Skip user.name and user.email as they're handled separately
-                    if [[ "$section" == "user" && ("$key" == "name" || "$key" == "email") ]]; then
-                        continue
-                    fi
-                    
-                    # Only set if not already configured
-                    if [[ -z "$(git config --global --get "$section.$key")" ]]; then
-                        git config --global "$section.$key" "$value" || {
-                            print_message "warn" "Failed to set Git config $section.$key"
-                        }
-                    fi
-                done <<< "$config_lines"
-            fi
-        done
-        
+        # Backup existing .gitconfig if it exists
+        if [ -f "$HOME/.gitconfig" ]; then
+            print_message "info" "Backing up existing .gitconfig..."
+            cp "$HOME/.gitconfig" "$HOME/.gitconfig.bak" || {
+                print_message "warn" "Failed to backup .gitconfig, but continuing..."
+            }
+        fi
+        # Copy default configurations
+        print_message "info" "Installing default Git configurations..."
+        cp "$defaults_file" "$HOME/.gitconfig" || {
+            print_message "warn" "Failed to install default Git configurations."
+        }
         print_message "info" "Default Git configurations applied successfully."
     else
         print_message "warn" "Default Git configuration file not found. Skipping defaults."
