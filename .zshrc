@@ -5,7 +5,7 @@ ZSH_THEME="molayab"
 # ==================== ENVIRONMENT VARIABLES AND PATH ====================
 export LANG=en_US.UTF-8
 export MANPATH="/usr/local/man:$MANPATH"
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/Users/dks0721391/.mint/bin:/Users/dks0721391/Applications:/usr/local/bin:/usr/local/jamf/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.mint/bin:$HOME/Applications:/usr/local/bin:/usr/local/jamf/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 # ==================== PLUGIN CONFIGURATION ====================
 plugins=(
