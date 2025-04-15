@@ -157,40 +157,6 @@ install_theme() {
     fi
 }
 
-# Step 5: Configure plugins
-configure_plugins() {
-    print_message "info" "Configuring Oh My Zsh plugins..."
-    
-    local required_plugins=("git" "macos" "dotenv" "xcode" "swiftpm" "ssh" "mosh" "brew")
-    
-    # Check if plugins directory exists
-    if [ ! -d "$HOME/.oh-my-zsh/plugins" ]; then
-        exit_error "Oh My Zsh plugins directory not found. Is Oh My Zsh installed correctly?"
-    fi
-    
-    # Check if all required plugins are available
-    for plugin in "${required_plugins[@]}"; do
-        if [ ! -d "$HOME/.oh-my-zsh/plugins/$plugin" ] && [ ! -d "$HOME/.oh-my-zsh/custom/plugins/$plugin" ]; then
-            print_message "warn" "Plugin '$plugin' not found in Oh My Zsh plugins directory."
-        fi
-    done
-    
-    # Create a plugins string for the configuration
-    local plugins_string="plugins=(${required_plugins[@]})"
-    
-    # Update plugins in .zshrc
-    if ! grep -q "$plugins_string" "$HOME/.zshrc"; then
-        print_message "info" "Updating plugins configuration in .zshrc..."
-        sed -i.bak "s/^plugins=.*$/$plugins_string/" "$HOME/.zshrc" || {
-            print_message "warn" "Failed to update plugins in .zshrc. Please update them manually."
-        }
-    else
-        print_message "info" "Plugins are already correctly configured in .zshrc."
-    fi
-    
-    print_message "info" "Plugin configuration completed."
-}
-
 # Step 6: Source configuration and display success message
 finalize_installation() {
     print_message "info" "Finalizing installation..."
@@ -225,7 +191,6 @@ main() {
     check_oh_my_zsh
     backup_and_install_dotfiles
     install_theme
-    configure_plugins
     finalize_installation
 }
 
