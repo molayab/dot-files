@@ -67,7 +67,8 @@ The installation script will:
 - Verify system prerequisites (Zsh 5.9+)
 - Install Oh My Zsh if not already present
 - Back up your existing dotfiles to a timestamped directory
-- Install all configuration files (.zshrc, .vimrc, .gitconfig, .lesshst)
+- Install all configuration files (.zshrc, .vimrc, .lesshst)
+- Prompt for Git configuration details (name and email)
 - Set up the custom theme
 - Configure required plugins
 - Provide clear instructions for next steps
@@ -88,22 +89,27 @@ If you prefer to install manually:
 
 3. Back up your existing configuration:
    ```bash
-   for file in .zshrc .vimrc .gitconfig .lesshst; do
+   ```bash
+   for file in .zshrc .vimrc .lesshst; do
      [ -f "$HOME/$file" ] && mv "$HOME/$file" "$HOME/$file.backup"
    done
    ```
-
 4. Copy configuration files:
    ```bash
    cp ~/.dot-files/.zshrc ~/.zshrc
    cp ~/.dot-files/.vimrc ~/.vimrc
-   cp ~/.dot-files/.gitconfig ~/.gitconfig
    cp ~/.dot-files/.lesshst ~/.lesshst
    ```
 
 5. Install the theme:
    ```bash
    cp ~/.dot-files/themes/molayab.zsh-theme ~/.oh-my-zsh/themes/
+   ```
+
+5. Configure Git (if needed):
+   ```bash
+   git config --global user.name "Your Name"
+   git config --global user.email "your.email@example.com"
    ```
 
 6. Source the configuration:
@@ -166,6 +172,20 @@ killxcodes
 - `zshconfig` - Edit .zshrc file using vim
 - `ohmyzsh` - Edit Oh My Zsh configuration
 
+### Git Configuration
+
+The installation script will guide you through setting up your Git configuration:
+
+1. If Git is already configured, the script will show your current settings and ask if you want to update them
+2. You'll be prompted to enter your name and email for Git commits
+3. Basic Git defaults will be configured automatically (editor, push strategy, etc.)
+
+You can update your Git configuration any time using:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
 
 ## Usage Examples
 
