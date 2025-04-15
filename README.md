@@ -11,6 +11,16 @@ The .zshrc file is organized into distinct sections:
 - Aliases
 - Functions
 
+## Quick Start
+
+For the fastest installation:
+
+```bash
+git clone https://github.com/molayab/dot-files.git ~/.dot-files && cd ~/.dot-files && chmod +x install.sh && ./install.sh
+```
+
+See the [Installation](#installation) section below for detailed instructions and manual installation options.
+
 ## Prerequisites
 
 To use this configuration, you need:
@@ -34,6 +44,74 @@ The configuration uses these Oh My Zsh plugins:
 - ssh
 - mosh
 - brew
+
+## Installation
+
+### Automated Installation (Recommended)
+
+This repository includes an automated installation script that handles the complete setup process:
+
+```bash
+# Clone the repository
+git clone https://github.com/molayab/dot-files.git ~/.dot-files
+cd ~/.dot-files
+
+# Make the script executable
+chmod +x install.sh
+
+# Run the installation script
+./install.sh
+```
+
+The installation script will:
+- Verify system prerequisites (Zsh 5.9+)
+- Install Oh My Zsh if not already present
+- Back up your existing dotfiles to a timestamped directory
+- Install all configuration files (.zshrc, .vimrc, .gitconfig, .lesshst)
+- Set up the custom theme
+- Configure required plugins
+- Provide clear instructions for next steps
+
+After installation completes:
+1. Start a new terminal session or run: `source ~/.zshrc`
+2. Verify that the theme and plugins are working correctly
+
+### Manual Installation
+
+If you prefer to install manually:
+
+1. Ensure Zsh and Oh My Zsh are installed on your system
+2. Clone this repository:
+   ```bash
+   git clone https://github.com/molayab/dot-files.git ~/.dot-files
+   ```
+
+3. Back up your existing configuration:
+   ```bash
+   for file in .zshrc .vimrc .gitconfig .lesshst; do
+     [ -f "$HOME/$file" ] && mv "$HOME/$file" "$HOME/$file.backup"
+   done
+   ```
+
+4. Copy configuration files:
+   ```bash
+   cp ~/.dot-files/.zshrc ~/.zshrc
+   cp ~/.dot-files/.vimrc ~/.vimrc
+   cp ~/.dot-files/.gitconfig ~/.gitconfig
+   cp ~/.dot-files/.lesshst ~/.lesshst
+   ```
+
+5. Install the theme:
+   ```bash
+   cp ~/.dot-files/themes/molayab.zsh-theme ~/.oh-my-zsh/themes/
+   ```
+
+6. Source the configuration:
+   ```bash
+   source ~/.zshrc
+   ```
+
+Note: When moving to a new computer, the configuration uses relative paths with `$HOME` references, so it should work without modification.
 
 ## Features and Functions
 
@@ -88,19 +166,6 @@ killxcodes
 - `zshconfig` - Edit .zshrc file using vim
 - `ohmyzsh` - Edit Oh My Zsh configuration
 
-## Installation
-1. Ensure Zsh and Oh My Zsh are installed on your system
-2. Install the molayab theme
-3. Copy the .zshrc file to your home directory:
-   ```
-   cp .zshrc ~/.zshrc
-   ```
-4. Source the file to apply changes:
-   ```
-   source ~/.zshrc
-   ```
-
-If moving to a new computer, the configuration uses relative paths with `$HOME` references, so it should work without modification.
 
 ## Usage Examples
 
