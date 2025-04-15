@@ -102,7 +102,7 @@ backup_and_install_dotfiles() {
     print_message "info" "Created backup directory: $backup_dir"
     
     # Define dotfiles to install
-    local dotfiles=(".gitconfig" ".vimrc" ".zshrc" ".lesshst")
+    local dotfiles=(".vimrc" ".zshrc" ".lesshst")
     
     for file in "${dotfiles[@]}"; do
         # Check if source file exists in repository
@@ -157,6 +157,125 @@ install_theme() {
     fi
 }
 
+# Step 5: Configure Git with user input and defaults
+configure_git() {
+    print_message "info" "Configuring Git..."
+    
+    # Check if git is installed
+    if ! command_exists git; then
+        print_message "warn" "Git is not installed. Skipping Git configuration."
+        return
+    fi
+    
+    # Apply default Git configurations first
+    print_message "info" "Applying default Git configurations..."
+    
+    local defaults_file="$SCRIPT_DIR/.gitconfig.defaults"
+    if [ -f "$defaults_file" ]; then
+        # Read and apply each section from .gitconfig.defaults
+        local sections=$(grep -E '^\[.*\]' "$defaults_file" | sed -e 's/\[//' -e 's/\]//')
+        
+        for section in $sections; do
+            # For sections that might have subsections (like mergetool.vscode)
+            if [[ "$section" == *"."* ]]; then
+                main_section=$(echo "$section" | cut -d. -f1)
+                sub_section=$(echo "$section" | cut -d. -f2)
+                
+                # Get keys and values for this section
+                local config_lines=$(sed -n "/^\[$section\]/,/^\[/p" "$defaults_file" | grep -v "^\[" | grep -v "^$")
+                
+                while IFS= read -r line; do
+                    [ -z "$line" ] && continue
+                    key=$(echo "$line" | cut -d= -f1 | sed 's/^[ \t]*//')
+                    value=$(echo "$line" | cut -d= -f2- | sed 's/^[ \t]*//')
+                    
+                    # Only set if not already configured
+                    if [[ -z "$(git config --global --get "$main_section.$sub_section.$key")" ]]; then
+                        git config --global "$main_section.$sub_section.$key" "$value" || {
+                            print_message "warn" "Failed to set Git config $main_section.$sub_section.$key"
+                        }
+                    fi
+                done <<< "$config_lines"
+            else
+                # Get keys and values for this section
+                local config_lines=$(sed -n "/^\[$section\]/,/^\[/p" "$defaults_file" | grep -v "^\[" | grep -v "^$")
+                
+                while IFS= read -r line; do
+                    [ -z "$line" ] && continue
+                    key=$(echo "$line" | cut -d= -f1 | sed 's/^[ \t]*//')
+                    value=$(echo "$line" | cut -d= -f2- | sed 's/^[ \t]*//')
+                    
+                    # Skip user.name and user.email as they're handled separately
+                    if [[ "$section" == "user" && ("$key" == "name" || "$key" == "email") ]]; then
+                        continue
+                    fi
+                    
+                    # Only set if not already configured
+                    if [[ -z "$(git config --global --get "$section.$key")" ]]; then
+                        git config --global "$section.$key" "$value" || {
+                            print_message "warn" "Failed to set Git config $section.$key"
+                        }
+                    fi
+                done <<< "$config_lines"
+            fi
+        done
+        
+        print_message "info" "Default Git configurations applied successfully."
+    else
+        print_message "warn" "Default Git configuration file not found. Skipping defaults."
+    fi
+    
+    # Check if git user details are already configured
+    local current_name=$(git config --global --get user.name)
+    local current_email=$(git config --global --get user.email)
+    
+    if [[ -n "$current_name" && -n "$current_email" ]]; then
+        echo -e "Current Git user configuration:"
+        echo -e "  Name:  ${BLUE}$current_name${NC}"
+        echo -e "  Email: ${BLUE}$current_email${NC}"
+        
+        read -p "Do you want to update your Git user information? (y/N): " update_git
+        if [[ ! "$update_git" =~ ^[Yy]$ ]]; then
+            print_message "info" "Keeping existing Git user configuration."
+            return
+        fi
+    fi
+    
+    # Prompt for Git user name
+    local git_name=""
+    local git_email=""
+    
+    while [[ -z "$git_name" ]]; do
+        read -p "Enter your name for Git commits: " git_name
+        if [[ -z "$git_name" ]]; then
+            print_message "warn" "Name cannot be empty. Please try again."
+        fi
+    done
+    
+    # Prompt for Git email
+    while [[ -z "$git_email" ]]; do
+        read -p "Enter your email for Git commits: " git_email
+        if [[ -z "$git_email" ]]; then
+            print_message "warn" "Email cannot be empty. Please try again."
+        elif ! [[ "$git_email" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+            print_message "warn" "Invalid email format. Please try again."
+            git_email=""
+        fi
+    done
+    
+    # Configure Git user information
+    git config --global user.name "$git_name" || {
+        print_message "warn" "Failed to set Git user name."
+    }
+    
+    git config --global user.email "$git_email" || {
+        print_message "warn" "Failed to set Git user email."
+    }
+    
+    print_message "info" "Git user configured successfully with name '$git_name' and email '$git_email'."
+    print_message "info" "Git configuration complete!"
+}
+
 # Step 6: Source configuration and display success message
 finalize_installation() {
     print_message "info" "Finalizing installation..."
@@ -191,6 +310,7 @@ main() {
     check_oh_my_zsh
     backup_and_install_dotfiles
     install_theme
+    configure_git
     finalize_installation
 }
 
