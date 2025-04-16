@@ -5,7 +5,17 @@ ZSH_THEME="molayab"
 # ==================== ENVIRONMENT VARIABLES AND PATH ====================
 export LANG=en_US.UTF-8
 export MANPATH="/usr/local/man:$MANPATH"
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.mint/bin:$HOME/Applications:/usr/local/bin:/usr/local/jamf/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+# Add Homebrew paths
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+# Add Mint binary path
+export PATH="$HOME/.mint/bin:$PATH"
+# Add custom Applications path
+export PATH="$HOME/Applications:$PATH"
+# Add Visual Studio Code binary path
+export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+# Add system paths
+export PATH="/usr/local/bin:/usr/local/jamf/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # ==================== PLUGIN CONFIGURATION ====================
 plugins=(
@@ -25,10 +35,6 @@ alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
 # ==================== FUNCTIONS ====================
-# Open VS Code from terminal
-code() { 
-  VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;
-}
 
 # Open Android Studio from terminal
 studio() {
