@@ -152,3 +152,23 @@ killxcodes() {
   
   echo "\033[1;34m=== Xcode process termination complete! ===\033[0m"
 }
+
+# Open URL in default browser
+open_url() {
+  if [ $# -eq 0 ]; then
+    echo "\033[1;31mError: No URL provided.\033[0m"
+    echo "Usage: open_url <url>"
+    return 1
+  fi
+
+  local url="$1"
+  
+  # Check if URL has http:// or https:// prefix, add http:// if missing
+  if [[ ! "$url" =~ ^https?:// ]]; then
+    url="http://$url"
+    echo "Added http:// prefix to URL: $url"
+  fi
+  
+  echo "\033[1;32mOpening URL in browser: $url\033[0m"
+  open "$url"
+}
